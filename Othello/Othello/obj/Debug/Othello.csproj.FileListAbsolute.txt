@@ -1,1 +1,14 @@
 c:\users\raphael.schaffo\documents\visual studio 2015\Projects\Othello\Othello\bin\Debug\Othello.exe.config
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\bin\Debug\Othello.exe.config
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\bin\Debug\Othello.exe
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\bin\Debug\Othello.pdb
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\MainWindow.g.cs
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\App.g.cs
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello_MarkupCompile.cache
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello_MarkupCompile.lref
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\MainWindow.baml
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello.g.resources
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello.Properties.Resources.resources
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello.csproj.GenerateResource.Cache
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello.exe
+C:\Users\damien.gygi\Documents\Visual Studio 2015\Projects\OthelloXaml\Othello\Othello\obj\Debug\Othello.pdb
