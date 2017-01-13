@@ -1,0 +1,1 @@
+c:\users\raphael.schaffo\documents\visual studio 2015\Projects\Othello\Othello\bin\Debug\Othello.exe.config
