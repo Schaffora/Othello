@@ -35,7 +35,7 @@ namespace Othello
         {
             InitializeComponent();
 
-            isWhiteTurn = true;
+            isWhiteTurn = false;
             whitePlayerActualTime = 0;
             whitePlayerTotalTime = 0;
             blackPlayerActualTime = 0;
@@ -73,11 +73,12 @@ namespace Othello
                     b.Background = black;
                 }
                 isWhiteTurn = !isWhiteTurn;
-            }
+            }            
 
         }
         private void refreshBoard()
         {
+            //TODO afficher les case jouables par chaque user
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
