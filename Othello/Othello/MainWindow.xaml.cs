@@ -24,17 +24,29 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
+
+            List<Tile> tiles = new List<Tile>();
+            List<Button> buttons = new List<Button>();
+
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    Button b = new Button();
-                    Grid.SetRow(b, i);
-                    Grid.SetColumn(b, j);
-
-                    Board.Children.Add(b);
+                   tiles.Add(new Othello.Tile());
+                   buttons.Add(new Button());
+                   Grid.SetRow(buttons[buttons.Count-1], i);
+                   Grid.SetColumn(buttons[buttons.Count - 1], j);
+                   buttons[buttons.Count - 1].Click += this.case_Click;
+                   Board.Children.Add(buttons[buttons.Count - 1]);
                 }
             }
+        }
+        private void case_Click(object sender, EventArgs e)
+        {
+            Button b = (Button)sender;
+            int column = Grid.GetColumn(b);
+            int row= Grid.GetRow(b);
+            b.Background = new SolidColorBrush(Colors.Red);
         }
 
     }
