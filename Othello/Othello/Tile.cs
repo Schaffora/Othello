@@ -11,13 +11,15 @@ namespace Othello
 
     class Tile
     {
-        public string state;
-        public string color;
+        public bool taken;
+        public bool isPlayable;
+        public bool isWhite;
 
         public Tile()
         {
-            state = "taken";       
-            color = "";
+            taken = false;       
+            isWhite = true;
+            isPlayable = true;
         }
 
   

@@ -21,18 +21,31 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window
     {
+        public bool isWhiteTurn;
+        public int whitePlayerActualTime;
+        public int blackPlayerActualTime;
+        public int whitePlayerTotalTime;
+        public int blackPlayerTotalTime;
+        private Othello.Game game;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            List<Tile> tiles = new List<Tile>();
+            isWhiteTurn = true;
+            whitePlayerActualTime = 0;
+            whitePlayerTotalTime = 0;
+            blackPlayerActualTime = 0;
+            blackPlayerTotalTime = 0;
+
+            game = new Othello.Game();
+
             List<Button> buttons = new List<Button>();
 
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                   tiles.Add(new Othello.Tile());
                    buttons.Add(new Button());
                    Grid.SetRow(buttons[buttons.Count-1], i);
                    Grid.SetColumn(buttons[buttons.Count - 1], j);
@@ -46,7 +59,16 @@ namespace Othello
             Button b = (Button)sender;
             int column = Grid.GetColumn(b);
             int row= Grid.GetRow(b);
-            b.Background = new SolidColorBrush(Colors.Red);
+            if(isWhiteTurn==true)
+            {
+                b.Background = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                b.Background = new SolidColorBrush(Colors.White);
+            }
+            isWhiteTurn = !isWhiteTurn;
+
         }
 
     }
