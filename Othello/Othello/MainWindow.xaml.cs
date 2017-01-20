@@ -27,6 +27,9 @@ namespace Othello
         public int whitePlayerTotalTime;
         public int blackPlayerTotalTime;
         private Othello.Game game;
+        private SolidColorBrush black = new SolidColorBrush(Colors.Black);
+        private SolidColorBrush white = new SolidColorBrush(Colors.White);
+        private Button[,] buttons;
 
         public MainWindow()
         {
@@ -40,35 +43,55 @@ namespace Othello
 
             game = new Othello.Game();
 
-            List<Button> buttons = new List<Button>();
-
+            buttons = new Button[8, 8];
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                   buttons.Add(new Button());
-                   Grid.SetRow(buttons[buttons.Count-1], i);
-                   Grid.SetColumn(buttons[buttons.Count - 1], j);
-                   buttons[buttons.Count - 1].Click += this.case_Click;
-                   Board.Children.Add(buttons[buttons.Count - 1]);
+                   buttons[i, j] = new Button();
+                   Grid.SetRow(buttons[i, j], i);
+                   Grid.SetColumn(buttons[i, j], j);
+                   buttons[i, j].Click += this.case_Click;
+                   Board.Children.Add(buttons[i, j]);
                 }
             }
+            refreshBoard();
         }
         private void case_Click(object sender, EventArgs e)
         {
             Button b = (Button)sender;
             int column = Grid.GetColumn(b);
             int row= Grid.GetRow(b);
-            if(isWhiteTurn==true)
+            if (game.playMove(column, row, isWhiteTurn))
             {
-                b.Background = new SolidColorBrush(Colors.Black);
+                if (isWhiteTurn == true)
+                {
+                    b.Background = white ;
+                }
+                else
+                {
+                    b.Background = black;
+                }
+                isWhiteTurn = !isWhiteTurn;
             }
-            else
-            {
-                b.Background = new SolidColorBrush(Colors.White);
-            }
-            isWhiteTurn = !isWhiteTurn;
 
+        }
+        private void refreshBoard()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if(game.tiles[i, j].state==state.white)
+                    {
+                        buttons[i, j].Background = white;
+                    }
+                    else if(game.tiles[i, j].state == state.black)
+                    {
+                        buttons[i, j].Background = black;
+                    }                    
+                }
+            }
         }
 
     }

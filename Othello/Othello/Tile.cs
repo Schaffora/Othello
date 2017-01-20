@@ -8,17 +8,21 @@ using System.Windows.Media;
 
 namespace Othello
 {
+    enum state
+    {
+        black,
+        white,
+        empty
+    }
 
     class Tile
     {
-        public bool taken;
+        public state state;
         public bool isPlayable;
-        public bool isWhite;
 
         public Tile()
         {
-            taken = false;       
-            isWhite = true;
+            state = state.empty;       
             isPlayable = true;
         }
 
