@@ -12,18 +12,17 @@ namespace Othello
     {
         black,
         white,
-        empty
+        empty,
+        isAbleToPlay
     }
 
     class Tile
     {
         public state state;
-        public bool isPlayable;
 
         public Tile()
         {
             state = state.empty;       
-            isPlayable = true;
         }
 
   

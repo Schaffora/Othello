@@ -29,6 +29,7 @@ namespace Othello
         private Othello.Game game;
         private SolidColorBrush black = new SolidColorBrush(Colors.Black);
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
+        private SolidColorBrush lgtGreen = new SolidColorBrush(Colors.LightGreen);
         private Button[,] buttons;
 
         public MainWindow()
@@ -49,8 +50,8 @@ namespace Othello
                 for (int j = 0; j < Game.BOARDSIZE; j++)
                 {
                    buttons[i, j] = new Button();
-                    buttons[i, j].Background= new SolidColorBrush(Colors.ForestGreen);
-                    Grid.SetRow(buttons[i, j], j);
+                   buttons[i, j].Background= new SolidColorBrush(Colors.ForestGreen);
+                   Grid.SetRow(buttons[i, j], j);
                    Grid.SetColumn(buttons[i, j], i);
                    buttons[i, j].Click += this.case_Click;
                    Board.Children.Add(buttons[i, j]);
@@ -79,7 +80,6 @@ namespace Othello
         }
         private void refreshBoard()
         {
-            //TODO afficher les case jouables par chaque user
             for (int i = 0; i < Game.BOARDSIZE; i++)
             {
                 for (int j = 0; j < Game.BOARDSIZE; j++)
@@ -91,7 +91,11 @@ namespace Othello
                     else if(game.tiles[i, j].state == state.black)
                     {
                         buttons[i, j].Background = black;
-                    }                  
+                    }
+                    else if (game.tiles[i, j].state == state.isAbleToPlay)
+                    {
+                        buttons[i, j].Background = lgtGreen;
+                    }
                 }
             }
         }

@@ -42,7 +42,7 @@ namespace Othello
         public bool playMove(int column, int line, bool isWhite)
         {
             Tuple<int, int> pos = new Tuple<int, int>(column, line);
-            if (tiles[column, line].state == state.empty)
+            if (tiles[column, line].state == state.empty || tiles[column, line].state == state.isAbleToPlay)
             {
                 if (isWhite == true)
                 {
@@ -127,7 +127,10 @@ namespace Othello
                     else
                     {
                         if (opponent)
+                        {
                             moveList.Add(new Tuple<int, int>(x, posY));
+                            tiles[x, posY].state = state.isAbleToPlay;
+                        }
                         break;
                     }
                 }
