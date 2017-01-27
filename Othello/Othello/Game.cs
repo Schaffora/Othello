@@ -8,19 +8,18 @@ using System.Windows;
 
 namespace Othello
 {
-
     
-    class Game : IPlayable { 
-   
-        public Tile [,] tiles = new Tile[8,8];
+    class Game : IPlayable {
+        public static int BOARDSIZE = 8;
+        public Tile [,] tiles = new Tile[BOARDSIZE, BOARDSIZE];
         private List<Tuple<int, int>> moveList;
 
         public Game()
         {
             moveList = new List<Tuple<int, int>>();
-            for (int i=0;i<8;i++)
+            for (int i=0;i< BOARDSIZE; i++)
             {
-                for(int j=0;j<8;j++)
+                for(int j=0;j< BOARDSIZE; j++)
                 {
                     tiles[i, j] = new Tile();
                 }
@@ -30,11 +29,6 @@ namespace Othello
             tiles[3, 3].state = state.white;
             tiles[4, 3].state = state.black;
             tiles[3, 4].state = state.black;
-
-            tiles[4, 4].isPlayable = false;
-            tiles[3, 3].isPlayable = false;
-            tiles[4, 3].isPlayable = false;
-            tiles[3, 4].isPlayable = false;
             listMove(state.black);
 
         }
@@ -52,11 +46,10 @@ namespace Othello
             {
                 if (isWhite == true)
                 {
-                    //tiles[column, line].state = state.white;
-                    //return true;
                     if (moveList.Contains(pos))
                     {
                         tiles[column, line].state = state.white;
+                        flipPieces(column, line,state.black);
                         listMove(state.black);
                         return true;
                     }
@@ -68,6 +61,7 @@ namespace Othello
                     if (moveList.Contains(pos))
                     {
                         tiles[column, line].state = state.black;
+                        flipPieces(column, line,state.white);
                         listMove(state.white);
                         return true;
                     }
@@ -87,9 +81,9 @@ namespace Othello
             moveList.Clear();
             //TODO check les cases au dessus, au dessous, à gauche et à droite
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < BOARDSIZE; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < BOARDSIZE; j++)
                 {
                     if (tiles[i, j].state != state.empty)
                     {
@@ -139,6 +133,56 @@ namespace Othello
                 }
             }
             //TODO check les diagonales
+        }
+
+        public void flipPieces(int posX, int posY,state s)
+        {
+            bool opponent;
+            state player1 = s;
+            state player2;
+            bool flipLeft = false;
+            int x;
+            int y;
+            if (player1 == state.black)
+            {
+                player2 = state.white;
+            }
+            else
+            {
+                player2 = state.black;
+            }
+            x = posX + 1;
+            opponent = false;
+            while (x < BOARDSIZE)
+            {
+                if (tiles[x, posY].state == player1)
+                {
+                    x += 1;
+                    opponent = true;
+                }
+                else if (tiles[x, posY].state == player2)
+                {
+                    if (opponent)
+                        flipLeft = true;
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            int tempx = posX;
+            int tempy = posY;
+            if (flipLeft)
+            {
+                tempx = posX + 1;
+                while (tiles[tempx, posY].state == player1)
+                {
+                    tiles[tempx, posY].state = player2;
+                    tempx += 1;
+                }
+            }
+
         }
 
         public Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn)
