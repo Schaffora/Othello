@@ -10,63 +10,107 @@ namespace Othello
 {
     
     class Game : IPlayable {
-        public static int BOARDSIZE = 8;
-        public Tile [,] tiles = new Tile[BOARDSIZE, BOARDSIZE];
-        private List<Tuple<int, int>> moveList;
+        public int boardsize;
+        public Tile[,] tiles;
+        private List<Tuple<int, int>> flips;
 
-        public Game()
+        public Game(bool isWhiteTurn, int size)
         {
-            moveList = new List<Tuple<int, int>>();
-            for (int i=0;i< BOARDSIZE; i++)
+            flips= new List<Tuple<int, int>>();
+            boardsize = size;
+            tiles = new Tile[boardsize, boardsize];
+
+            for (int i=0;i< boardsize; i++)
             {
-                for(int j=0;j< BOARDSIZE; j++)
+                for(int j=0;j< boardsize; j++)
                 {
                     tiles[i, j] = new Tile();
                 }
             }
-
             tiles[4, 4].state = state.white;
             tiles[3, 3].state = state.white;
             tiles[4, 3].state = state.black;
             tiles[3, 4].state = state.black;
-            listMove(state.black);
 
+            updatePlayables(isWhiteTurn);
         }
 
         public bool isPlayable(int column, int line, bool isWhite)
         {
-            return true;
+            bool tilePlayabe = false;
+            if(isWhite)
+                tilePlayabe=playable(column, line, state.white);
+            else
+                tilePlayabe=playable(column, line, state.black);
+            return tilePlayabe;
+        }
+        public bool playable(int c, int l, state s)
+        {
+            bool found = false;
+            state otherState;
+            if (s == state.white)
+                otherState = state.black;
+            else
+                otherState = state.white;
+
+            int[,] direction = { { 1, 0 }, { 0, 1 }, { 0, -1 }, { -1, 0 }, { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 } };
+
+            for(int i=0;i<8; i++)
+            {
+                if (found == true)
+                {
+                    break;
+                }
+                int sl = l + direction[i, 0];
+                int sc = c + direction[i, 1];
+        
+                bool got = false;
+                while (sl >=0 && sl<=boardsize-1 && sc>=0 && sc<=boardsize-1)
+                {
+                    if(tiles[sl,sc].state==state.empty || tiles[sl, sc].state==state.isAbleToPlay)
+                    {
+                        got = false;
+                        break;
+                    }
+                    if (tiles[sl, sc].state == otherState)
+                    {
+                        got = true;
+                    }
+                    if (tiles[sl, sc].state == s && got == false)
+                    {
+                        got = false;
+                        break;
+                    }
+                    if (tiles[sl, sc].state == s && got == true)
+                    {
+                        found = true;
+                        break;
+                    }
+                    sl = sl + direction[i, 0];
+                    sc = sc + direction[i, 1];
+                }
+            }
+            return found;
         }
 
 
         public bool playMove(int column, int line, bool isWhite)
         {
-            Tuple<int, int> pos = new Tuple<int, int>(column, line);
-            if (tiles[column, line].state == state.empty || tiles[column, line].state == state.isAbleToPlay)
+            if (tiles[line, column].state == state.isAbleToPlay)
             {
                 if (isWhite == true)
                 {
-                    if (moveList.Contains(pos))
-                    {
-                        tiles[column, line].state = state.white;
-                        flipPieces(column, line,state.black);
-                        listMove(state.black);
+                        tiles[line, column].state = state.white;
+                        flipPieces(column, line,state.white);
+                        updatePlayables(false);
                         return true;
-                    }
-                    else
-                        return false;
                 }
                 else
                 {
-                    if (moveList.Contains(pos))
-                    {
-                        tiles[column, line].state = state.black;
-                        flipPieces(column, line,state.white);
-                        listMove(state.white);
+                        tiles[line, column].state = state.black;
+                        flipPieces(column, line,state.black);
+                        updatePlayables(true);
                         return true;
-                    }
-                    else
-                        return false;
                 }                
             }
             else
@@ -74,118 +118,82 @@ namespace Othello
                 return false;
             }
         }
-        //TODO lister tout les coups permis pour un joueur
-        public void listMove(state s)
+        public void clearPlayables()
         {
-            List<Tuple<int, int>> taken = new List<Tuple<int, int>>();
-            moveList.Clear();
-            //TODO check les cases au dessus, au dessous, à gauche et à droite
-
-            for (int i = 0; i < BOARDSIZE; i++)
+            for (int i = 0; i < boardsize; i++)
             {
-                for (int j = 0; j < BOARDSIZE; j++)
+                for (int j = 0; j < boardsize; j++)
                 {
-                    if (tiles[i, j].state != state.empty)
+                    if (tiles[i, j].state == state.isAbleToPlay)
                     {
-                        taken.Add(new Tuple<int, int>(i, j));
+                        tiles[i, j].state = state.empty;
                     }
                 }
             }
+        }
+        public void updatePlayables(bool isWhiteTurn)
+        {
+            clearPlayables();
             
-            for(int i=0;i<taken.Count;i++)
+            for (int i = 0; i < boardsize; i++)
             {
-                bool opponent;
-                state player1 = s;
-                state player2;
-                if (player1 == state.black)
+                for (int j = 0; j < boardsize; j++)
                 {
-                    player2 = state.white;
-                }
-                else
-                {
-                    player2 = state.black;
-                }                
-                int posX = taken[i].Item1;
-                int posY = taken[i].Item2;
-                int x;
-                int y;
-
-                //Left
-                x = posX - 1;
-                opponent = false;
-                while (x >= 0)
-                {
-                    if (tiles[x, posY].state == player2)
+                    if(isPlayable(i,j, isWhiteTurn))
                     {
-                        x -= 1;
-                        opponent = true;
-                    }
-                    else if (tiles[x, posY].state == player1)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        if (opponent)
-                        {
-                            moveList.Add(new Tuple<int, int>(x, posY));
-                            tiles[x, posY].state = state.isAbleToPlay;
-                        }
-                        break;
+                        tiles[j, i].state = state.isAbleToPlay;
                     }
                 }
             }
-            //TODO check les diagonales
         }
 
-        public void flipPieces(int posX, int posY,state s)
+        public void flipPieces(int c, int l, state s)
         {
-            bool opponent;
-            state player1 = s;
-            state player2;
-            bool flipLeft = false;
-            int x;
-            int y;
-            if (player1 == state.black)
-            {
-                player2 = state.white;
-            }
+            flips.Clear();
+            state otherState;
+            if (s == state.white)
+                otherState = state.black;
             else
-            {
-                player2 = state.black;
-            }
-            x = posX + 1;
-            opponent = false;
-            while (x < BOARDSIZE)
-            {
-                if (tiles[x, posY].state == player1)
-                {
-                    x += 1;
-                    opponent = true;
-                }
-                else if (tiles[x, posY].state == player2)
-                {
-                    if (opponent)
-                        flipLeft = true;
-                    break;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            int tempx = posX;
-            int tempy = posY;
-            if (flipLeft)
-            {
-                tempx = posX + 1;
-                while (tiles[tempx, posY].state == player1)
-                {
-                    tiles[tempx, posY].state = player2;
-                    tempx += 1;
-                }
-            }
+                otherState = state.white;
 
+            int[,] direction = { { 1, 0 }, { 0, 1 }, { 0, -1 }, { -1, 0 }, { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 } };
+
+            for (int i = 0; i < 8; i++)
+            {
+                int sl = l + direction[i, 0];
+                int sc = c + direction[i, 1];
+                bool got = false;
+                while (sl >= 0 && sl <= boardsize - 1 && sc >= 0 && sc <= boardsize - 1)
+                {
+                    if (tiles[sl, sc].state == state.empty || tiles[sl, sc].state == state.isAbleToPlay)
+                    {
+                        got = false;
+                        break;
+                    }
+                    if (tiles[sl, sc].state == otherState)
+                    {
+                        got = true;
+                    }
+                    if (tiles[sl, sc].state == s && got == false)
+                    {
+                        got = false;
+                        break;
+                    }
+                    if (tiles[sl, sc].state == s && got == true)
+                    {
+                        flips.Add(new Tuple<int, int>(sl, sc));
+                        break;
+                    }
+                    sl = sl + direction[i, 0];
+                    sc = sc + direction[i, 1];
+                }
+            }
+            foreach (Tuple<int, int> item in flips)
+            {
+                int lVal= item.Item1;
+                int cVal = item.Item2;
+                tiles[lVal, cVal].state = s;
+            }
         }
 
         public Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn)
@@ -196,12 +204,34 @@ namespace Othello
 
         public int getWhiteScore()
         {
-            return 0;
+            int score = 0;
+            for (int i = 0; i < boardsize; i++)
+            {
+                for (int j = 0; j < boardsize; j++)
+                {
+                    if(tiles[i, j].state==state.white)
+                    {
+                        score += 1;
+                    }
+                }
+            }
+            return score;
         }
 
         public int getBlackScore()
         {
-            return 0;
+            int score = 0;
+            for (int i = 0; i < boardsize; i++)
+            {
+                for (int j = 0; j < boardsize; j++)
+                {
+                    if (tiles[i, j].state == state.black)
+                    {
+                        score += 1;
+                    }
+                }
+            }
+            return score;
         }
     }
 }
