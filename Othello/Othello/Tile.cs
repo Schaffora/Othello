@@ -8,6 +8,7 @@ using System.Windows.Media;
 
 namespace Othello
 {
+    /* State enum for a tile */
     enum state
     {
         black,
@@ -15,16 +16,14 @@ namespace Othello
         empty,
         isAbleToPlay
     }
-
+    /* Tile class */
     class Tile
     {
         public state state;
-
         public Tile()
         {
+            /* Initial state is empty */
             state = state.empty;       
         }
-
-  
     }
 }

@@ -18,34 +18,47 @@ namespace Othello
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        /* Static boardsize */
         public static int BOARDSIZE= 8;
+
+        /* Choose if black or white start */
         public bool isWhiteTurn;
 
+        /* Time values */
         public int whitePlayerActualTime;
         public int blackPlayerActualTime;
         public int whitePlayerTotalTime;
         public int blackPlayerTotalTime;
 
+        /* Othello game class (using IPlayable interface) */
         private Othello.Game game;
 
-        private SolidColorBrush black = new SolidColorBrush(Colors.Black);
-        private SolidColorBrush white = new SolidColorBrush(Colors.White);
-        private SolidColorBrush lgtGreen = new SolidColorBrush(Colors.LightGreen);
+        /* Static color values for the graphics */
+        private static SolidColorBrush BLACK = new SolidColorBrush(Colors.Black);
+        private static SolidColorBrush WHITE = new SolidColorBrush(Colors.White);
+        private static SolidColorBrush LGTGREEN = new SolidColorBrush(Colors.LightGreen);
 
+        /* Time Labels */
         private Label time1;
         private Label time2;
 
+        /* Button tab */
         private Button[,] buttons;
         
+        /* Databinding */
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /* Scores */
         private String whiteScore;
         private String blackScore;
 
+        /* Main point of the application */
         public MainWindow()
         {
             InitializeComponent();
 
             isWhiteTurn = false;
+
             whitePlayerActualTime = 0;
             whitePlayerTotalTime = 0;
             blackPlayerActualTime = 0;
@@ -58,6 +71,7 @@ namespace Othello
             refreshBoard();
         }
        
+        /* Function that handle the click event of all buttons*/
         private void case_Click(object sender, EventArgs e)
         {
             Button b = (Button)sender;
@@ -67,6 +81,8 @@ namespace Othello
                 isWhiteTurn = !isWhiteTurn;
             refreshBoard();
         }
+
+        /* Graphic refresh of the board */
         private void refreshBoard()
         {
             updateScores();
@@ -75,17 +91,19 @@ namespace Othello
                 for (int j = 0; j < BOARDSIZE; j++)
                 {
                     if(game.tiles[i, j].state==state.white)
-                        buttons[i, j].Background = white;
+                        buttons[i, j].Background = WHITE;
                     else if(game.tiles[i, j].state == state.black)
-                        buttons[i, j].Background = black;
+                        buttons[i, j].Background = BLACK;
                     else if (game.tiles[i, j].state == state.isAbleToPlay)
-                        buttons[i, j].Background = lgtGreen;
+                        buttons[i, j].Background = LGTGREEN;
                     else if (game.tiles[i, j].state == state.empty)
                         buttons[i, j].Background = new SolidColorBrush(Colors.ForestGreen);
                 }
             }
 
         }
+
+        /* Button initialisation (creation) */
         public void ButtonInit()
         {
             buttons = new Button[BOARDSIZE, BOARDSIZE];
@@ -102,6 +120,8 @@ namespace Othello
                 }
             }
         }
+
+        /* Label initialisation (creation) */
         public void LabelInit()
         {
             Label title = new Label();
@@ -110,6 +130,8 @@ namespace Othello
             title.HorizontalAlignment = HorizontalAlignment.Center;
             title.FontWeight = FontWeights.Bold;
             title.FontSize = 30;
+            title.FontFamily = new FontFamily("magneto");
+            title.Foreground = new SolidColorBrush(Colors.Blue);
             Grid.SetRow(title, 0);
             Grid.SetColumn(title, 1);
             MainGrid.Children.Add(title);
@@ -118,7 +140,13 @@ namespace Othello
             Label player2 = new Label();
 
             player1.Content = "Player 1";
+            player1.FontSize = 18;
+            player1.Foreground= new SolidColorBrush(Colors.Blue);
+            player1.FontStyle = FontStyles.Oblique;
             player2.Content = "Player 2";
+            player2.FontSize = 18;
+            player2.Foreground = new SolidColorBrush(Colors.Blue);
+            player2.FontStyle = FontStyles.Oblique;
             player2.HorizontalAlignment = HorizontalAlignment.Right;
 
             Player1.Children.Add(player1);
@@ -128,8 +156,8 @@ namespace Othello
             time1 = new Label();
             time2 = new Label();
 
-            time1.Content = "Actual score: ";
-            time2.Content = "Actual score: ";
+            time1.Content = "Actual time: ";
+            time2.Content = "Actual time: ";
             time2.HorizontalAlignment = HorizontalAlignment.Right;
 
             Grid.SetRow(time1, 2);
@@ -140,12 +168,15 @@ namespace Othello
             Grid.SetColumn(time2, 0);
             Player2.Children.Add(time2);
         }
+
+        /* Databinding for score */
         private void updateScores()
         {
             updateBlackScore = "Actual score: " + game.getBlackScore().ToString();
             updateWhiteScore = "Actual score: " + game.getWhiteScore().ToString();
         }
 
+        /* Databinding black score */
         public String updateBlackScore
         {
             get { return blackScore; }
@@ -155,6 +186,8 @@ namespace Othello
                 RaisePropertyChanged("updateBlackScore");
             }
         }
+
+        /* Databinding white score */
         public String updateWhiteScore
         {
             get { return whiteScore; }
@@ -165,6 +198,7 @@ namespace Othello
             }
         }
         
+        /* On property changed */
         private void RaisePropertyChanged(String propertyName)
         {
             if (PropertyChanged != null)

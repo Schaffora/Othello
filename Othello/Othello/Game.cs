@@ -148,6 +148,7 @@ namespace Othello
                 }
             }
         }
+
         /*Update the playable after a move */
         public bool updatePlayables(bool isWhiteTurn)
         {
@@ -163,8 +164,7 @@ namespace Othello
                         {
                             tiles[i, j].state = state.isAbleToPlay;
                             numberOfPlayables++;
-                        }
-                            
+                        }    
                     }
                 }
             }
@@ -230,22 +230,26 @@ namespace Othello
             }
         }
 
+        /* Interface part for IA */
         public Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn)
         {
             Tuple<char, int> tuple = new Tuple<char, int>('a',0);
             return tuple;
         }
 
+        /* Interface function that get black score */
         public int getBlackScore()
         {
             return getScore(state.black);
         }
 
+        /* Interface function that get white score */
         public int getWhiteScore()
         {
             return getScore(state.white);
         }
 
+        /* Function that get the score using state */
         private int getScore(state s)
         {
             int score = 0;
