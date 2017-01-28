@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ using System.Windows.Shapes;
 
 namespace Othello
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public static int BOARDSIZE= 8;
         public bool isWhiteTurn;
@@ -31,13 +32,14 @@ namespace Othello
         private SolidColorBrush white = new SolidColorBrush(Colors.White);
         private SolidColorBrush lgtGreen = new SolidColorBrush(Colors.LightGreen);
 
-        private Label score1;
-        private Label score2;
-
         private Label time1;
         private Label time2;
 
         private Button[,] buttons;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        private String whiteScore;
+        private String blackScore;
 
         public MainWindow()
         {
@@ -67,6 +69,7 @@ namespace Othello
         }
         private void refreshBoard()
         {
+            updateScores();
             for (int i = 0; i < BOARDSIZE; i++)
             {
                 for (int j = 0; j < BOARDSIZE; j++)
@@ -81,11 +84,6 @@ namespace Othello
                         buttons[i, j].Background = new SolidColorBrush(Colors.ForestGreen);
                 }
             }
-
-            int scr1 = game.getBlackScore();
-            score1.Content = "Actual score: " + scr1.ToString();
-            int scr2 = game.getWhiteScore();
-            score2.Content = "Actual score: " + scr2.ToString();
 
         }
         public void ButtonInit()
@@ -127,26 +125,11 @@ namespace Othello
             Player2.Children.Add(player2);
 
 
-            score1 = new Label();
-            score2 = new Label();
-
-            score1.Content = "Actual score: ";
-            score2.Content = "Actual score: ";
-            score2.HorizontalAlignment = HorizontalAlignment.Right;
-
-            Grid.SetRow(score1, 1);
-            Grid.SetColumn(score1, 0);
-            Player1.Children.Add(score1);
-
-            Grid.SetRow(score2, 1);
-            Grid.SetColumn(score2, 0);
-            Player2.Children.Add(score2);
-
             time1 = new Label();
             time2 = new Label();
 
-            time1.Content = "Played Time: ";
-            time2.Content = "Played Time: ";
+            time1.Content = "Actual score: ";
+            time2.Content = "Actual score: ";
             time2.HorizontalAlignment = HorizontalAlignment.Right;
 
             Grid.SetRow(time1, 2);
@@ -156,6 +139,38 @@ namespace Othello
             Grid.SetRow(time2, 2);
             Grid.SetColumn(time2, 0);
             Player2.Children.Add(time2);
+        }
+        private void updateScores()
+        {
+            updateBlackScore = "Actual score: " + game.getBlackScore().ToString();
+            updateWhiteScore = "Actual score: " + game.getWhiteScore().ToString();
+        }
+
+        public String updateBlackScore
+        {
+            get { return blackScore; }
+            set
+            {
+                blackScore = value;
+                RaisePropertyChanged("updateBlackScore");
+            }
+        }
+        public String updateWhiteScore
+        {
+            get { return whiteScore; }
+            set
+            {
+                whiteScore = value;
+                RaisePropertyChanged("updateWhiteScore");
+            }
+        }
+        
+        private void RaisePropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
     }

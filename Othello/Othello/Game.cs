@@ -236,33 +236,25 @@ namespace Othello
             return tuple;
         }
 
-        public int getWhiteScore()
-        {
-            int score = 0;
-            for (int i = 0; i < boardsize; i++)
-            {
-                for (int j = 0; j < boardsize; j++)
-                {
-                    if(tiles[i, j].state==state.white)
-                    {
-                        score += 1;
-                    }
-                }
-            }
-            return score;
-        }
-
         public int getBlackScore()
         {
+            return getScore(state.black);
+        }
+
+        public int getWhiteScore()
+        {
+            return getScore(state.white);
+        }
+
+        private int getScore(state s)
+        {
             int score = 0;
             for (int i = 0; i < boardsize; i++)
             {
                 for (int j = 0; j < boardsize; j++)
                 {
-                    if (tiles[i, j].state == state.black)
-                    {
-                        score += 1;
-                    }
+                    if (tiles[i, j].state == s)
+                        score++;
                 }
             }
             return score;
