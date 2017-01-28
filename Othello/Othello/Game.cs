@@ -10,6 +10,7 @@ namespace Othello
 {
     
     class Game : IPlayable {
+
         public int boardsize;
         public Tile[,] tiles;
         private List<Tuple<int, int>> flips;
@@ -67,21 +68,21 @@ namespace Othello
                 bool got = false;
                 while (sl >=0 && sl<=boardsize-1 && sc>=0 && sc<=boardsize-1)
                 {
-                    if(tiles[sl,sc].state==state.empty || tiles[sl, sc].state==state.isAbleToPlay)
+                    if(tiles[sc,sl].state==state.empty || tiles[sc, sl].state==state.isAbleToPlay)
                     {
                         got = false;
                         break;
                     }
-                    if (tiles[sl, sc].state == otherState)
+                    if (tiles[sc, sl].state == otherState)
                     {
                         got = true;
                     }
-                    if (tiles[sl, sc].state == s && got == false)
+                    if (tiles[sc, sl].state == s && got == false)
                     {
                         got = false;
                         break;
                     }
-                    if (tiles[sl, sc].state == s && got == true)
+                    if (tiles[sc, sl].state == s && got == true)
                     {
                         found = true;
                         break;
@@ -96,20 +97,20 @@ namespace Othello
 
         public bool playMove(int column, int line, bool isWhite)
         {
-            if (tiles[line, column].state == state.isAbleToPlay)
+            if (tiles[column, line].state == state.isAbleToPlay)
             {
                 if (isWhite == true)
                 {
-                        tiles[line, column].state = state.white;
+                        tiles[column, line].state = state.black;
                         flipPieces(column, line,state.white);
-                        updatePlayables(false);
+                        updatePlayables(true);
                         return true;
                 }
                 else
                 {
-                        tiles[line, column].state = state.black;
+                        tiles[column, line].state = state.white;
                         flipPieces(column, line,state.black);
-                        updatePlayables(true);
+                        updatePlayables(false);
                         return true;
                 }                
             }
@@ -141,7 +142,8 @@ namespace Othello
                 {
                     if(isPlayable(i,j, isWhiteTurn))
                     {
-                        tiles[j, i].state = state.isAbleToPlay;
+                        if(tiles[i,j].state==state.empty)
+                            tiles[i, j].state = state.isAbleToPlay;
                     }
                 }
             }
@@ -165,23 +167,23 @@ namespace Othello
                 bool got = false;
                 while (sl >= 0 && sl <= boardsize - 1 && sc >= 0 && sc <= boardsize - 1)
                 {
-                    if (tiles[sl, sc].state == state.empty || tiles[sl, sc].state == state.isAbleToPlay)
+                    if (tiles[sc, sl].state == state.empty || tiles[sc, sl].state == state.isAbleToPlay)
                     {
                         got = false;
                         break;
                     }
-                    if (tiles[sl, sc].state == otherState)
+                    if (tiles[sc, sl].state == otherState)
                     {
                         got = true;
                     }
-                    if (tiles[sl, sc].state == s && got == false)
+                    if (tiles[sc, sl].state == s && got == false)
                     {
                         got = false;
                         break;
                     }
-                    if (tiles[sl, sc].state == s && got == true)
+                    if (tiles[sc, sl].state == s && got == true)
                     {
-                        flips.Add(new Tuple<int, int>(sl, sc));
+                        flips.Add(new Tuple<int, int>(sc, sl));
                         break;
                     }
                     sl = sl + direction[i, 0];
@@ -190,9 +192,9 @@ namespace Othello
             }
             foreach (Tuple<int, int> item in flips)
             {
-                int lVal= item.Item1;
-                int cVal = item.Item2;
-                tiles[lVal, cVal].state = s;
+                int lVal= item.Item2;
+                int cVal = item.Item1;
+                tiles[cVal, lVal].state = otherState;
             }
         }
 

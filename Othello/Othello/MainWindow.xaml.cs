@@ -15,10 +15,6 @@ using System.Windows.Shapes;
 
 namespace Othello
 {
-    // Utiliser les mots clé suivant : Black - White - Tile - Move
-    /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public static int BOARDSIZE= 8;
