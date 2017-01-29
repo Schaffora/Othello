@@ -112,24 +112,21 @@ namespace Othello
             if (tiles[column, line].state == state.isAbleToPlay)
             {
                 if (isWhite == true)
-                {
-                    tiles[column, line].state = state.white;
-                    flipPieces(column, line, state.white);
-                    if(updatePlayables(false))
-                        return true;
-                    else
-                        return false;   
-                }
+                    return verify(column, line, state.white, isWhite);
                 else
-                {
-                    tiles[column, line].state = state.black;
-                    flipPieces(column, line, state.black);
-                    if(updatePlayables(true))
-                        return true;
-                    else
-                        return false;
-                }                
+                    return verify(column, line, state.black, isWhite);               
             }
+            else
+                return false;
+        }
+
+        /* Function that play and verify if a player won */
+        public bool verify(int column, int line, state s, bool isWhite)
+        {
+            tiles[column, line].state = s;
+            flipPieces(column, line, s);
+            if (updatePlayables(!isWhite))
+                return true;
             else
                 return false;
         }
@@ -250,7 +247,7 @@ namespace Othello
         }
 
         /* Function that get the score using state */
-        private int getScore(state s)
+        public int getScore(state s)
         {
             int score = 0;
             for (int i = 0; i < boardsize; i++)

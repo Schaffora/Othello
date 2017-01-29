@@ -51,6 +51,7 @@ namespace Othello
         /* Scores */
         private String whiteScore;
         private String blackScore;
+        bool win = false;
 
         /* Main point of the application */
         public MainWindow()
@@ -74,12 +75,41 @@ namespace Othello
         /* Function that handle the click event of all buttons*/
         private void case_Click(object sender, EventArgs e)
         {
-            Button b = (Button)sender;
-            int column = Grid.GetColumn(b);
-            int line= Grid.GetRow(b);
-            if (game.playMove(column, line, isWhiteTurn))
-                isWhiteTurn = !isWhiteTurn;
-            refreshBoard();
+            if(win==false)
+            {
+                Button b = (Button)sender;
+                int column = Grid.GetColumn(b);
+                int line = Grid.GetRow(b);
+                if (game.playMove(column, line, isWhiteTurn))
+                    isWhiteTurn = !isWhiteTurn;
+                else
+                {
+                    if(game.updatePlayables(!isWhiteTurn) == false)
+                        MessageBox.Show("Player can't play, so he skip his turn");
+                    game.updatePlayables(isWhiteTurn);
+                }
+                if(game.getScore(state.white)==0)
+                {
+                    MessageBox.Show("Player 2 win ");
+                    win = true;
+                }
+                if (game.getScore(state.black) == 0)
+                {
+                    MessageBox.Show("Player 1 win ");
+                    win = true;
+                }
+                if (game.getScore(state.white)+ game.getScore(state.black)==64)
+                {
+                    win = true;
+                    if(game.getScore(state.white)>game.getScore(state.black))
+                        MessageBox.Show("Player 1 win ");
+                    else if (game.getScore(state.white) < game.getScore(state.black))
+                        MessageBox.Show("Player 2 win ");
+                    else
+                        MessageBox.Show("It's a tile ");
+                }
+                refreshBoard();
+            }
         }
 
         /* Graphic refresh of the board */
