@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OthelloConsole;
 using System.Windows;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Othello
 {
@@ -259,6 +261,66 @@ namespace Othello
                 }
             }
             return score;
+        }
+
+        /* Function to reset, restart a game */
+        public void resetGame()
+        {
+            for (int i = 0; i < boardsize; i++)
+            {
+                for (int j = 0; j < boardsize; j++)
+                {
+                    tiles[i, j].state = state.empty;
+                }
+            }
+            tiles[4, 4].state = state.white;
+            tiles[3, 3].state = state.white;
+            tiles[4, 3].state = state.black;
+            tiles[3, 4].state = state.black;
+            updatePlayables(false);
+        }
+
+        /* Function to save a game state */
+        public void saveGame(bool isWhite)
+        {
+            string datas = "";
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text file (*.txt)|*.txt";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                for (int i = 0; i < boardsize; i++)
+                {
+                    for (int j = 0; j < boardsize; j++)
+                    {
+                        if(tiles[i, j].state==state.empty)
+                            datas += "e;";
+                        if (tiles[i, j].state == state.black)
+                            datas += "b;";
+                        if (tiles[i, j].state == state.white)
+                            datas += "w;";
+                        if (tiles[i, j].state == state.isAbleToPlay)
+                            datas += "i;";
+                    }
+                }
+                if (isWhite)
+                    datas += "t;";
+                else
+                    datas += "f;";
+                File.WriteAllText(saveFileDialog.FileName, datas);
+            }
+        }
+
+        /* Function to Open a game state */
+        public void openGame(string datas,int i, int j)
+        {
+            if (datas == "e")
+                tiles[i, j].state = state.empty;
+            if (datas == "i")
+                tiles[i, j].state = state.isAbleToPlay;
+            if (datas == "w")
+                tiles[i, j].state = state.white;
+            if (datas == "b")
+                tiles[i, j].state = state.black;
         }
     }
 }

@@ -13,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using System.IO;
+
 
 namespace Othello
 {
@@ -237,5 +240,52 @@ namespace Othello
             }
         }
 
+        /*Menu handling, on new game click */
+        private void mnuNew_Click(object sender, RoutedEventArgs e)
+        {
+            game.resetGame();
+            refreshBoard();
+            isWhiteTurn = false;
+        }
+
+        /*Menu handling, on close game click */
+        private void mnuClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        /*Menu handling, on Save game click */
+        private void mnuSave_Click(object sender, RoutedEventArgs e)
+        {
+            game.saveGame(isWhiteTurn);
+        }
+
+        /*Menu handling, on Open game click */
+        private void mnuOpen_Click(object sender, RoutedEventArgs e)
+        {
+            string datas = "";
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                datas = File.ReadAllText(openFileDialog.FileName);
+                Char delimiter = ';';
+                String[] stateDatas = datas.Split(delimiter);
+                if (stateDatas[BOARDSIZE * BOARDSIZE] == "f")
+                    isWhiteTurn = false;
+                else
+                    isWhiteTurn = true;
+                int cpt = 0;
+                for (int i = 0; i < BOARDSIZE; i++)
+                {
+                    for (int j = 0; j < BOARDSIZE; j++)
+                    {
+                        game.openGame(stateDatas[cpt], i, j);
+                        cpt++;
+                    }
+                }
+            }
+            refreshBoard();
+        }
     }
 }
