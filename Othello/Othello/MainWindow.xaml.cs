@@ -51,7 +51,7 @@ namespace Othello
         private int totalTime2;
         private Stopwatch stopWatch;
 
-
+        /* Checkboxes */
         private CheckBox Fun1;
         private CheckBox Fun2;
 
