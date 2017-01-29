@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
+using System.Diagnostics;
 
 
 namespace Othello
@@ -40,10 +41,19 @@ namespace Othello
         private static SolidColorBrush BLACK = new SolidColorBrush(Colors.Black);
         private static SolidColorBrush WHITE = new SolidColorBrush(Colors.White);
         private static SolidColorBrush LGTGREEN = new SolidColorBrush(Colors.LightGreen);
+        private static SolidColorBrush LGTBLUE = new SolidColorBrush(Colors.LightBlue);
+        private static SolidColorBrush BLUE = new SolidColorBrush(Colors.Blue);
 
-        /* Time Labels */
+        /* Time */
         private Label time1;
         private Label time2;
+        private int totalTime1;
+        private int totalTime2;
+        private Stopwatch stopWatch;
+
+
+        private CheckBox Fun1;
+        private CheckBox Fun2;
 
         /* Button tab */
         private Button[,] buttons;
@@ -68,17 +78,30 @@ namespace Othello
             blackPlayerActualTime = 0;
             blackPlayerTotalTime = 0;
 
+            totalTime1 = 0;
+            totalTime2 = 0;
+
             game = new Othello.Game(isWhiteTurn, BOARDSIZE);
 
             ButtonInit();
             LabelInit();
+            CheckboxInit();
             refreshBoard();
+            stopWatch = new Stopwatch();
+            stopWatch.Start();
         }
        
         /* Function that handle the click event of all buttons*/
         private void case_Click(object sender, EventArgs e)
         {
-            if(win==false)
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            if (isWhiteTurn)
+                totalTime1 += (int)ts.TotalSeconds;
+            else
+                totalTime2 += (int)ts.TotalSeconds;
+
+            if (win==false)
             {
                 Button b = (Button)sender;
                 int column = Grid.GetColumn(b);
@@ -87,9 +110,12 @@ namespace Othello
                     isWhiteTurn = !isWhiteTurn;
                 else
                 {
-                    if(game.updatePlayables(!isWhiteTurn) == false)
-                        MessageBox.Show("Player can't play, so he skip his turn");
-                    game.updatePlayables(isWhiteTurn);
+                    if (game.getScore(state.white) + game.getScore(state.black) != 64)
+                    {
+                        if (game.updatePlayables(!isWhiteTurn) == false)
+                            MessageBox.Show("Player can't play, so he skip his turn");
+                        game.updatePlayables(isWhiteTurn);
+                    }
                 }
                 if(game.getScore(state.white)==0)
                 {
@@ -112,7 +138,15 @@ namespace Othello
                         MessageBox.Show("It's a tile ");
                 }
                 refreshBoard();
+                stopWatch = new Stopwatch();
+                stopWatch.Start();
             }
+        }
+
+        /* Function that handle the click event of all checkboxes*/
+        private void check_Click(object sender, EventArgs e)
+        {
+            refreshBoard();
         }
 
         /* Graphic refresh of the board */
@@ -124,20 +158,28 @@ namespace Othello
                 for (int j = 0; j < BOARDSIZE; j++)
                 {
                     if(game.tiles[i, j].state==state.white)
-                        buttons[i, j].Background = WHITE;
+                        if(Fun1.IsChecked==false)
+                            buttons[i, j].Background = WHITE;
+                        else
+                           buttons[i, j].Background = LGTBLUE;
                     else if(game.tiles[i, j].state == state.black)
-                        buttons[i, j].Background = BLACK;
+                        if (Fun2.IsChecked == false)
+                            buttons[i, j].Background = BLACK;
+                        else
+                            buttons[i, j].Background = BLUE;
                     else if (game.tiles[i, j].state == state.isAbleToPlay)
                         buttons[i, j].Background = LGTGREEN;
                     else if (game.tiles[i, j].state == state.empty)
                         buttons[i, j].Background = new SolidColorBrush(Colors.ForestGreen);
                 }
             }
+            time1.Content = "Total time: " + totalTime1.ToString();
+            time2.Content = "Total time: " + totalTime2.ToString();
 
         }
 
         /* Button initialisation (creation) */
-        public void ButtonInit()
+        private void ButtonInit()
         {
             buttons = new Button[BOARDSIZE, BOARDSIZE];
             for (int i = 0; i < BOARDSIZE; i++)
@@ -155,7 +197,7 @@ namespace Othello
         }
 
         /* Label initialisation (creation) */
-        public void LabelInit()
+        private void LabelInit()
         {
             Label title = new Label();
             title.Content = "Our Perfect Othello";
@@ -185,12 +227,11 @@ namespace Othello
             Player1.Children.Add(player1);
             Player2.Children.Add(player2);
 
-
             time1 = new Label();
             time2 = new Label();
 
-            time1.Content = "Actual time: ";
-            time2.Content = "Actual time: ";
+            time1.Content = "Total time: ";
+            time2.Content = "Total time: ";
             time2.HorizontalAlignment = HorizontalAlignment.Right;
 
             Grid.SetRow(time1, 2);
@@ -200,6 +241,25 @@ namespace Othello
             Grid.SetRow(time2, 2);
             Grid.SetColumn(time2, 0);
             Player2.Children.Add(time2);
+        }
+
+        /* Checkbox initialisation (creation) */
+        private void CheckboxInit()
+        {
+            Fun1 = new CheckBox();
+            Fun2 = new CheckBox();
+            Fun1.Click += this.check_Click;
+            Fun2.Click += this.check_Click;
+            Fun2.HorizontalAlignment = HorizontalAlignment.Right;
+
+            Grid.SetRow(Fun1, 3);
+            Grid.SetColumn(Fun1, 0);
+            Player1.Children.Add(Fun1);
+
+
+            Grid.SetRow(Fun2, 3);
+            Grid.SetColumn(Fun2, 0);
+            Player2.Children.Add(Fun2);
         }
 
         /* Databinding for score */
